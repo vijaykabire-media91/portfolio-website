@@ -8,6 +8,8 @@ import {BrowserRouter,Routes,Route,} from "react-router-dom";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function App() {
   const [count, setCount] = useState(0)
 /*----------------------------Contact-form-----------------------------*/
@@ -32,7 +34,7 @@ function App() {
     setStatus("Sending...");
   
     try {
-      const response = await fetch("http://localhost:5000/api/contact", {
+      const response = await fetch(`${API_URL}/api/contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
