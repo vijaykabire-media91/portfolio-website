@@ -188,25 +188,33 @@ const transporter = nodemailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+
+  // Email server response ko bahut der tak wait na kare
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
 });
 
 
 // =============================
 // Contact API
 // =============================
+// =============================
+// Contact API
+// =============================
 app.post("/api/contact", async (req, res) => {
   try {
-
     const { name, email, message } = req.body;
 
+    // =============================
     // Validation
+    // =============================
     if (!name || !email || !message) {
       return res.status(400).json({
         success: false,
         message: "Please fill all fields.",
       });
     }
-
 
     // =============================
     // Save Contact in MongoDB
@@ -221,43 +229,52 @@ app.post("/api/contact", async (req, res) => {
 
     console.log("Contact saved in MongoDB");
 
-
-    // Send Email
-    await transporter.sendMail({
-      from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
-
-      // Email kis account par receive hoga
-      to: process.env.RECEIVER_EMAIL,
-
-      // Reply karne par visitor ka email open hoga
-      replyTo: email,
-
-      subject: `Portfolio message from ${name}`,
-
-      text: `
-Name: ${name}
-Email: ${email}
-
-Message:
-${message}
-      `,
-    });
-
-
-    // Success Response
+    // =============================
+    // Send success immediately
+    // =============================
     res.status(200).json({
       success: true,
       message: "Message sent successfully!",
     });
 
+    // =============================
+    // Email Notification
+    // =============================
+    transporter
+      .sendMail({
+        from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
+
+        to: process.env.RECEIVER_EMAIL,
+
+        replyTo: email,
+
+        subject: `Portfolio message from ${name}`,
+
+        text: `
+Name: ${name}
+Email: ${email}
+
+Message:
+${message}
+        `,
+      })
+      .then(() => {
+        console.log("Email notification sent successfully");
+      })
+      .catch((error) => {
+        console.error("Email notification failed:", error.message);
+      });
+
   } catch (error) {
+    console.error("Contact save error:", error);
 
-    console.error("Email error:", error);
-
-    res.status(500).json({
-      success: false,
-      message: "Unable to send message. Please try again.",
-    });
+    // Yahan failure ka matlab MongoDB me bhi save nahi hua
+    if (!res.headersSent) {
+      res.status(500).json({
+        success: false,
+        message: "Unable to save message. Please try again.",
+      });
+    }
   }
 });
 
