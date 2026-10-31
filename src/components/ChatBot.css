@@ -318,12 +318,11 @@
 
   .chatbot-container {
     width: calc(100% - 30px);
-
     right: 15px;
-
     bottom: 160px;
 
-    height: 65vh;
+    height: min(65vh, 500px);
+    max-height: calc(100vh - 180px);
   }
 
 
@@ -387,7 +386,8 @@ body.footer-visible .floating-cta {
 /* Open Chat Window also moves upward */
 
 body.footer-visible .chatbot-container {
-  bottom: 295px;
+  bottom: 220px;
+  max-height: calc(100vh - 240px);
 }
 
 
@@ -406,7 +406,40 @@ body.footer-visible .chatbot-container {
   }
 
   body.footer-visible .chatbot-container {
-    bottom: 270px;
+    bottom: 205px;
+    height: min(60vh, 500px);
+    max-height: calc(100vh - 225px);
   }
 
+}
+
+/* =========================================
+   Final Mobile Chatbot Fix
+========================================= */
+
+@media (max-width: 500px) {
+
+  /* Chat open hone par floating X hide */
+  .chatbot-toggle.chatbot-open {
+    display: none;
+  }
+
+  /* Normal mobile chat window */
+  .chatbot-container {
+    right: 15px;
+    bottom: 90px;
+
+    width: calc(100% - 30px);
+
+    height: min(65vh, 500px);
+    max-height: calc(100vh - 120px);
+  }
+
+  /* Footer visible hone par */
+  body.footer-visible .chatbot-container {
+    bottom: 150px;
+
+    height: min(55vh, 430px);
+    max-height: calc(100vh - 180px);
+  }
 }

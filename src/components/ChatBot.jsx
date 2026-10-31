@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./ChatBot.css";
 
 function ChatBot() {
@@ -11,6 +11,14 @@ function ChatBot() {
       text: "Hi 👋 I'm Vijay's Portfolio Assistant. How can I help you?",
     },
   ]);
+
+  const messagesEndRef = useRef(null);
+
+    useEffect(() => {
+      messagesEndRef.current?.scrollIntoView({
+        behavior: "smooth",
+      });
+    }, [messages, isOpen]);
 
   // Chatbot reply logic
   const getBotReply = (message) => {
@@ -105,12 +113,12 @@ function ChatBot() {
   };
 
   // Enter key
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      sendMessage();
-    }
-  };
-
+    const handleKeyDown = (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    };
   return (
     <>
       {/* Chat Window */}
@@ -124,7 +132,11 @@ function ChatBot() {
               <span>● Online</span>
             </div>
 
-            <button onClick={() => setIsOpen(false)}>
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              aria-label="Close help desk"
+            >
               ✕
             </button>
           </div>
@@ -143,6 +155,7 @@ function ChatBot() {
                 {message.text}
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}
@@ -155,18 +168,22 @@ function ChatBot() {
               onKeyDown={handleKeyDown}
             />
 
-            <button onClick={sendMessage}>
-              ➤
-            </button>
+          <button
+            type="button"
+            onClick={sendMessage}
+            aria-label="Send message"
+          >
+            ➤
+          </button>
           </div>
         </div>
       )}
 
       {/* Floating Chat Button */}
       <button
-        className="chatbot-toggle"
+        className={`chatbot-toggle ${isOpen ? "chatbot-open" : ""}`}
         onClick={() => setIsOpen(!isOpen)}
-        aria-label="Open help desk"
+        aria-label={isOpen ? "Close help desk" : "Open help desk"}
       >
         {isOpen ? "✕" : "💬"}
       </button>

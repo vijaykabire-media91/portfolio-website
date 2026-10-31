@@ -517,7 +517,7 @@ useEffect(() => {
         {/* Download Resume */}
         <a
           href="/Web_Developer.pdf"
-          download="/Web_Developer.pdf"
+          download="Vijay_Kabire_Resume.pdf"
           className="resume-btn download-resume"
         >
           ↓ Download Resume
