@@ -12,7 +12,28 @@ const PORT = process.env.PORT || 5000;
 // =============================
 // Middleware
 // =============================
-app.use(cors());
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://portfolio-website-nine-flax-76.vercel.app",
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Browser ke bahar ke requests (Postman etc.) allow
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
+  })
+);
+
 app.use(express.json());
 
 
