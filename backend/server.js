@@ -182,17 +182,18 @@ app.get("/api/admin/contacts", verifyAdmin, async (req, res) => {
 // Nodemailer Configuration
 // =============================
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
 
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
 
-  // Email server response ko bahut der tak wait na kare
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 15000,
+  connectionTimeout: 15000,
+  greetingTimeout: 15000,
+  socketTimeout: 20000,
 });
 
 
