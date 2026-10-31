@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 const mongoose = require("mongoose"); // MongoDB
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -179,27 +179,10 @@ app.get("/api/admin/contacts", verifyAdmin, async (req, res) => {
 
 
 // =============================
-// Nodemailer Configuration
+// Resend Email Configuration
 // =============================
-const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-
-  connectionTimeout: 15000,
-  greetingTimeout: 15000,
-  socketTimeout: 20000,
-});
-
-
-// =============================
-// Contact API
-// =============================
 // =============================
 // Contact API
 // =============================
@@ -241,29 +224,34 @@ app.post("/api/contact", async (req, res) => {
     // =============================
     // Email Notification
     // =============================
-    transporter
-      .sendMail({
-        from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
+    resend.emails
+      .send({
+        from: "Portfolio Contact <onboarding@resend.dev>",
 
-        to: process.env.RECEIVER_EMAIL,
+        to: [process.env.RECEIVER_EMAIL],
 
         replyTo: email,
 
         subject: `Portfolio message from ${name}`,
 
         text: `
-Name: ${name}
-Email: ${email}
+    Name: ${name}
+    Email: ${email}
 
-Message:
-${message}
+    Message:
+    ${message}
         `,
       })
-      .then(() => {
-        console.log("Email notification sent successfully");
+      .then(({ data, error }) => {
+        if (error) {
+          console.error("Resend email failed:", error);
+          return;
+        }
+
+        console.log("Email notification sent successfully:", data);
       })
       .catch((error) => {
-        console.error("Email notification failed:", error.message);
+        console.error("Resend email failed:", error);
       });
 
   } catch (error) {
