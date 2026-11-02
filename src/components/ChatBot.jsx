@@ -191,7 +191,7 @@ function ChatBot() {
        {/* CTA Button */}
         <a
           href="#contact"
-          className="floating-cta"
+          className={`floating-cta ${isOpen ? "cta-hidden" : ""}`}
           aria-label="Contact Vijay"
         >
           <span className="cta-icon">🚀</span>
