@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import vijayImage from "./assets/Vijay.png";
+import vijayImage from "./assets/Vijay.webp";
 import './App.css'
 import ChatBot from "./components/ChatBot";
 import WhatsAppButton from "./components/WhatsAppButton";
@@ -147,7 +147,15 @@ useEffect(() => {
 
         <div className="hero-image">
           <div className="image-box">
-          <img src={vijayImage} alt="Vijay Kabire" />
+          <img
+            src={vijayImage}
+            alt="Vijay Kabire"
+            width="1254"
+            height="1254"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+          />
           </div>
         </div>
       </section>
