@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://portfolio-website-nine-flax-76.vercel.app/sitemap.xml
